@@ -4,11 +4,11 @@ using System.Diagnostics;
 
 namespace dept_assignment_movie_search.Controllers
 {
-    public class HomeController : Controller
+    public class MovieController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<MovieController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public MovieController(ILogger<MovieController> logger)
         {
             _logger = logger;
         }
@@ -18,10 +18,6 @@ namespace dept_assignment_movie_search.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

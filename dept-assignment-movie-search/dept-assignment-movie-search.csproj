@@ -7,4 +7,8 @@
     <RootNamespace>dept_assignment_movie_search</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

@@ -2,11 +2,10 @@
 {
     public class Movie
     {
-        public string? Title { get; set;}
-        public int RealeaseDate { get; set;}
-        public string? Country { get; set;}
-        public string? Image { get; set;}
-        public List<Actor>? Actors { get; set;}
+        public Guid Id { get; set; }
+        public string? Title { get; set; }
+        public string? Image { get; set; }
+        public MovieData? MovieData { get; set; }
 
     }
 }

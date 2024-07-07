@@ -14,4 +14,4 @@ This project demonstrates how to search for movies using the IMDB database API f
 - IMDB API
 
 ### Security 
-please provide api key app_settings.json api key can be found from Rapid API https://rapidapi.com/apidojo/api/imdb8
+please provide api key appsettings.json api key can be found from Rapid API https://rapidapi.com/apidojo/api/imdb8

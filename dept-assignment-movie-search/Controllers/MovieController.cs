@@ -2,6 +2,7 @@
 using dept_assignment_movie_search.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Text.Encodings.Web;
 
 namespace dept_assignment_movie_search.Controllers
 {
@@ -9,11 +10,13 @@ namespace dept_assignment_movie_search.Controllers
     {
         private readonly ILogger<MovieController> _logger;
         public IConfiguration _configuration;
+        private MovieService _movieService;
 
         public MovieController(ILogger<MovieController> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
+            _movieService = new MovieService(configuration);
         }
 
         public IActionResult Index()
@@ -26,11 +29,19 @@ namespace dept_assignment_movie_search.Controllers
         {
             if (string.IsNullOrEmpty(searchTerm))
             {
-                return View("Index");
+                return RedirectToAction("Index");
             }
-            MovieService movieService = new MovieService(_configuration);
-            var movies = await movieService.GetMoviesAsync(searchTerm);
-            return View("Index",movies);
+            var sanitizedSearchTerm = HtmlEncoder.Default.Encode(searchTerm);
+            try
+            {
+                var movies = await _movieService.GetMoviesAsync(sanitizedSearchTerm);
+                return View("Index", movies);
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+          
         }
 
         [HttpPost]
@@ -38,10 +49,15 @@ namespace dept_assignment_movie_search.Controllers
         {
             if (movie == null )
             {
-                return View("Index");
+                return RedirectToAction("Index");
             }
 
             return View(movie);
+        }
+
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

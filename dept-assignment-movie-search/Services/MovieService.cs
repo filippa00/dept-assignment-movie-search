@@ -19,8 +19,11 @@ namespace dept_assignment_movie_search.Services
 
         public async Task<IEnumerable<Movie>> GetMoviesAsync(string searchTerm)
         {
-           JObject jsonMovieArray = await RequestDataAsync(searchTerm);
-           return ProcessData(jsonMovieArray);
+            // Get json array from request
+            JObject jsonMovieArray = await RequestDataAsync(searchTerm);
+
+            //Process and return request 
+            return ProcessData(jsonMovieArray);
         }
 
         private async Task<JObject> RequestDataAsync(string searchTerm)
@@ -28,8 +31,11 @@ namespace dept_assignment_movie_search.Services
             JObject jsonMovieObject = new JObject();
             try
             {
+                //Get api key and host from environment variables 
                 string apiKey = _configuration["apikeysettings:x-rapidapi-key"];
                 string apiHost = _configuration["apikeysettings:x-rapidapi-host"];
+
+                //Do the request 
                 var client = new HttpClient();
                 var request = new HttpRequestMessage
                 {
@@ -75,11 +81,13 @@ namespace dept_assignment_movie_search.Services
             List<Movie> movieList = new List<Movie>();
             try
             {
+                //Main JObject 
                 var jsonMovie = jsonMovieObject["data"]?["mainSearch"]?["edges"];
                 if (jsonMovie != null)
                 {
                     foreach (var item in jsonMovie)
                     {
+                        //Get the values needed for a Movie object 
                         var titleText = item["node"]?["entity"]?["titleText"];
                         var releaseDate = item["node"]?["entity"]?["releaseDate"];
                         var primaryImage = item["node"]?["entity"]?["primaryImage"];
@@ -92,6 +100,7 @@ namespace dept_assignment_movie_search.Services
 
                         if (titleText != null && releaseDate != null && primaryImage != null && creditsList != null)
                         {
+                            //If values not empty create movie 
                             Movie movie = CreateMovie(titleText, releaseDate, primaryImage, creditsList, dateTime);
                             movieList.Add(movie);
                         }    
@@ -114,6 +123,7 @@ namespace dept_assignment_movie_search.Services
 
         private Movie CreateMovie(JToken titleText, JToken releaseDate, JToken primaryImage, JToken creditsList,DateTime dateTime )
         {
+            //Create movie with actors/credits inside
             Movie movie = new Movie
             {
                 Id = Guid.NewGuid(),

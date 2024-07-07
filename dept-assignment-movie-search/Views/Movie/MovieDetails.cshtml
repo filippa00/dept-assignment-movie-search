@@ -1,0 +1,53 @@
+﻿@model dept_assignment_movie_search.Models.Movie
+
+
+@if (Model != null)
+{
+    <div class="container text-center">
+        <div class="row align-items-center">
+            <h3 style="color: white;">@Model.Title</h3>
+        </div>
+        <br />
+        <div class="row align-items-center">
+         <div class="col">
+        <img src=@Model.Image style="max-height:auto; max-width:500px">
+           
+        </div>
+            <div class="col">
+
+                <p>Release Date: @Model.ReleaseDate.ToString("dd/MM/yyyy")</p>
+            <p>Country: @Model.Country</p>
+
+            </div>
+
+         </div>
+         <br />
+         <br />
+        <div class="row align-items-center">
+            <h3 class="text-center">Credits</h3>
+
+        </div>
+
+        <div class="row">
+        @foreach (var credit in Model.Actors){
+            <div class="col-4" style="margin-top: 20px;">
+                <div class="card" style="width: 18rem; height:400px;">
+                    <div class="card-header" style="background-color: black;">
+                        <h6 style="color: white;">@credit.Name</h6>
+                    </div>
+                    <div class="card-body" style="height:350px; background-color: black;">
+                        <a href="#" class="card-link">
+                            <img src=@credit.Image style="height:300px; max-width:250px">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+
+    </div>
+
+
+}
+
+ 

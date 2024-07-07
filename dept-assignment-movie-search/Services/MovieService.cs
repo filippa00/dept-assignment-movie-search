@@ -2,6 +2,7 @@
 using Microsoft.DotNet.MSIdentity.Shared;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Configuration;
 using System.Net.Http.Headers;
 using System.Text.Json.Nodes;
 
@@ -9,6 +10,13 @@ namespace dept_assignment_movie_search.Services
 {
     public class MovieService
     {
+        public IConfiguration _configuration;
+
+        public MovieService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task<IEnumerable<Movie>> GetMoviesAsync(string searchTerm)
         {
            JObject jsonMovieArray = await RequestDataAsync(searchTerm);
@@ -20,15 +28,17 @@ namespace dept_assignment_movie_search.Services
             JObject jsonMovieObject = new JObject();
             try
             {
+                string apiKey = _configuration["apikeysettings:x-rapidapi-key"];
+                string apiHost = _configuration["apikeysettings:x-rapidapi-host"];
                 var client = new HttpClient();
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
-                    RequestUri = new Uri($"https://imdb8.p.rapidapi.com/v2/search?searchTerm={searchTerm}&type=MOVIE&first=20"),
+                    RequestUri = new Uri($"https://{apiHost}/v2/search?searchTerm={searchTerm}&type=MOVIE&first=20"),
                     Headers =
                     {
-                        { "x-rapidapi-key", "f7c585a99fmsh352084dbb8c19e0p154e69jsn7ea1079f0ce3" },
-                        { "x-rapidapi-host", "imdb8.p.rapidapi.com" },
+                        { "x-rapidapi-key", apiKey},
+                        { "x-rapidapi-host", apiHost},
                     },
                                 };
                 using (var response = await client.SendAsync(request))
@@ -109,12 +119,9 @@ namespace dept_assignment_movie_search.Services
                 Id = Guid.NewGuid(),
                 Title = (string?)titleText["text"],
                 Image = (string?)primaryImage["url"],
-                MovieData = new MovieData
-                {
-                    Id = Guid.NewGuid(),
-                    Country = (string?)releaseDate["country"]?["id"],
-                    ReleaseDate = dateTime,
-                }
+                Country = (string?)releaseDate["country"]?["id"],
+                ReleaseDate = dateTime,
+
             };
 
             List<Actor> actorList = new List<Actor>();
@@ -135,7 +142,7 @@ namespace dept_assignment_movie_search.Services
                 break;
             }
 
-            movie.MovieData.Actors = actorList;
+            movie.Actors = actorList;
 
             return movie;
         }

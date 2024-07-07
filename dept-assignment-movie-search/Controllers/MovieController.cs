@@ -8,10 +8,12 @@ namespace dept_assignment_movie_search.Controllers
     public class MovieController : Controller
     {
         private readonly ILogger<MovieController> _logger;
+        public IConfiguration _configuration;
 
-        public MovieController(ILogger<MovieController> logger)
+        public MovieController(ILogger<MovieController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -26,14 +28,20 @@ namespace dept_assignment_movie_search.Controllers
             {
                 return View("Index");
             }
-            MovieService movieService = new MovieService();
+            MovieService movieService = new MovieService(_configuration);
             var movies = await movieService.GetMoviesAsync(searchTerm);
             return View("Index",movies);
         }
-        /*[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+
+        [HttpPost]
+        public ActionResult MovieDetails(Movie movie)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }*/
+            if (movie == null )
+            {
+                return View("Index");
+            }
+
+            return View(movie);
+        }
     }
 }

@@ -8,7 +8,7 @@
     <div class="text-center">
         <h1 class="display-4">Movie Search</h1>
         <br />
-        <p>description of where the movies are coming from </p>
+        <p>Search a movie from IMDB database and view detailed pages for each move</p>
 
         <form action="@Url.Action("Search","Movie")" class="d-flex" role="search" style="justify-content: center; align-items: center; ">
 
@@ -30,20 +30,44 @@
         @foreach(var movie in Model)
         {
             <div class="col-3" style="margin-top: 20px;">
-                    <div class="card" style="width: 18rem; height:400px;">
+                    <div class="card" style="width: 18rem; height:420px;">
                         <div class="card-header" style="background-color: black;">
                                 <h6 style="color: white;">@movie.Title</h6>
                         </div>
-                        <div class="card-body" style="height:350px; background-color: black;">
-                <a href="#" class="card-link">
-                                <img src=@movie.Image style="height:300px; max-width:250px">
-                </a>
+                        <div class="card-body" style="height:400px; background-color: black;">
+                            <form method="post" action="@Url.Action("MovieDetails", "Movie")">
+                              
+                                <input type="hidden" name="Id" value="@movie.Id" />
+                                <input type="hidden" name="Title" value="@movie.Title" />
+                                <input type="hidden" name="Image" value="@movie.Image" />
+                                <input type="hidden" name="ReleaseDate" value="@movie.ReleaseDate" />
+                                <input type="hidden" name="Country" value="@movie.Country" />
+
+                                @if (movie?.Actors?.Count != 0)
+                                {
+                                    @for (int i = 0; i < movie?.Actors?.Count; i++)
+                                    {
+                                        <input type="hidden" name="Actors[@i].Id" value="@movie.Actors[i].Id" />
+                                        <input type="hidden" name="Actors[@i].Name" value="@movie.Actors[i].Name" />
+                                        <input type="hidden" name="Actors[@i].Image" value="@movie.Actors[i].Image" />
+                                    }
+                                }
+
+
+
+                                <button type="submit"  style="background-color: black;">
+                                    <img src="@movie.Image" style="height:300px; max-width:250px">
+                                </button>
+                            </form>
                         </div>
                     </div>
+
+                    
             </div>
 
         }
     }
     </div>
 </div>
-
+ 
+ 
